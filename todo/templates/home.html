@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="col-md-7">
+                <div class="well">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn btn-primary" type="submit" style="color: #F9F7F7;">Add New Todo</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                class="img-fluid" alt="Sample image">
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-primary">
+            You need to log in to add a new todo.
+        </div>
+    {% endif %}
+</div><br>
+
+<div class="container">
+    <div class="row">
+        {% for todo in todos %}
+        <div class="col-lg-4">
+            <div class="card card-margin" style="position: relative;">
+                <div class="card-header no-border">
+                    <h5 class="card-title">
+                        To-do
+                        {% if todo.priority|lower == 'low' %}
+                        <span class="priority" style="background-color: green;"></span>
+                        {% elif todo.priority|lower == 'medium' %}
+                        <span class="priority" style="background-color: orange;"></span>
+                        {% else %}
+                        <span class="priority" style="background-color: red;"></span>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="widget-49">
+                        <div class="widget-49-title-wrapper">
+                            <div class="widget-49-date-primary">
+                                <span class="widget-49-date-day">{{ todo.date_day }}</span>
+                                <span class="widget-49-date-month">{{ todo.date_month }}</span>
+                            </div>
+                            <div class="widget-49-meeting-info">
+                                <span class="widget-49-pro-title">{{ todo.title }}</span>
+                                <span class="widget-49-pro-title">{{ todo.category.name }}</span>
+                            </div>
+                        </div>
+                        <div class="widget-49-body-info">
+                            <p class="widget-49-body-text"><span>{{ todo.body }}</span></p>
+                        </div>
+                        <div class="widget-49-meeting-action">
+                            <a href="{% url 'todo_complete' todo.id %}" class="btn btn-sm btn-flash-border-primary"><i class="fa-solid fa-check" style="color: #74C0FC;"></i></a>
+                            <a href="{% url 'todo_delete' todo.id %}" class="btn btn-sm btn-flash-border-primary"><i class="fa-solid fa-trash" style="color: #B197FC;"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
